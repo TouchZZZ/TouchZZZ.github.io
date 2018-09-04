@@ -181,7 +181,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            首页
+            Home
           </a>
         </li>
       
@@ -191,7 +191,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            列表
+            Archives
           </a>
         </li>
       
@@ -214,6 +214,142 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/03/springboot简单集成kafka/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/03/springboot简单集成kafka/" itemprop="url">Springboot简单集成kafka</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-03T11:59:57+08:00">
+                2018-09-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>#Linux下安装kafka<br>安装前需要先注意下,spring-kafka的版本和kafka-client的版本有对应的要求，这里我们下载1.0.0版本的kafka到linux<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http://mirrors.shuosc.org/apache/kafka/1.0.0/kafka_2.11-1.0.0.tgz</span><br></pre></td></tr></table></figure></p>
+<p>下载到linux下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf kafka_2.11-1.0.0.tgz</span><br><span class="line"><span class="built_in">cd</span> kafka_2.11-1.0.0/</span><br></pre></td></tr></table></figure></p>
+<p>解压并进入kafka的目录<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bin/zookeeper-server-start.sh -daemon config/zookeeper.properties</span><br><span class="line">bin/kafka-server-start.sh  config/server.properties</span><br></pre></td></tr></table></figure></p>
+<p>启动自带的zookeeper<br>启动kafka</p>
+<p>#测试是否能够正常通讯<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/kafka-console-producer.sh --broker-list localhost:9092 --topic <span class="built_in">test</span></span><br></pre></td></tr></table></figure></p>
+<p>启动生产者<br>输入几个字符<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic <span class="built_in">test</span> --from-beginning</span><br></pre></td></tr></table></figure></p>
+<p>启动消费者，接收到生产者发来的消息</p>
+<p>#进行springboot的配置<br>在配置之前，需要先将server.properties的配置进行修改，否则springboot的监听器无法生效<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim config/server.properties</span><br></pre></td></tr></table></figure></p>
+<p>中间有一段被注释掉的：listeners=PLAINTEXT://:9092<br>将注释改为当前ip的完整地址<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">listeners=PLAINTEXT://192.168.0.188:9092</span><br></pre></td></tr></table></figure></p>
+<p>192.168.0.188自行修改<br>idea生成一个简单的springboot项目<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
+<p>笔者版本为2.1.8<br>spring-kafka的版本和linux上的版本会有要求，具体见<br><a href="https://projects.spring.io/spring-kafka/" target="_blank" rel="noopener">https://projects.spring.io/spring-kafka/</a></p>
+<p>测试前需要先启动linux下的kafka和zookeeper</p>
+<p>application.properties如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">spring.kafka.bootstrap-servers=192.168.0.188:9092</span><br><span class="line">spring.kafka.consumer.group-id=<span class="built_in">test</span>-consume-group</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">@RestController</span><br><span class="line">@RequestMapping(<span class="string">"/kafka"</span>)</span><br><span class="line">public class CollectController &#123;</span><br><span class="line">    protected final Logger logger = LoggerFactory.getLogger(this.getClass());</span><br><span class="line">    @Autowired</span><br><span class="line">    private KafkaTemplate kafkaTemplate;</span><br><span class="line"></span><br><span class="line">    @RequestMapping(value = <span class="string">"/sendMsg"</span>, method = RequestMethod.GET)</span><br><span class="line">    public String <span class="function"><span class="title">sendMsg</span></span>() &#123;</span><br><span class="line">        kafkaTemplate.send(<span class="string">"test"</span>, <span class="string">"foo"</span>);</span><br><span class="line">        <span class="built_in">return</span> <span class="string">"ok"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@Component</span><br><span class="line">public class MyBean &#123;</span><br><span class="line"></span><br><span class="line">	@Autowired</span><br><span class="line">	private KafkaTemplate kafkaTemplate;</span><br><span class="line"></span><br><span class="line">	@KafkaListener(topics = <span class="string">"test"</span>)</span><br><span class="line">	public void processMessage(String content) &#123;</span><br><span class="line">		System.out.println(<span class="string">"++++++++++++++++++++++++++++++++++++++++"</span>);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p>访问<a href="http://localhost:8080/kafka/sendMsg" target="_blank" rel="noopener">http://localhost:8080/kafka/sendMsg</a><br>@KafkaListener(topics = “test”)注册的监听事件被触发</p>
+<p>kafa相关命令集合:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">bin/kafka-console-producer.sh --broker-list 192.168.0.188:9092 --topic test2</span><br><span class="line"></span><br><span class="line">bin/kafka-console-consumer.sh --bootstrap-server 192.168.0.188:9092 --topic test2 --from-beginning</span><br><span class="line"></span><br><span class="line">bin/kaftopics.sh --describe --zookeeper 192.168.0.109:2181 --topic test123</span><br><span class="line"></span><br><span class="line">bin/kafka-topics.sh --list --zookeeper 192.168.0.109:2181</span><br><span class="line"></span><br><span class="line">netstat -tunlp|egrep <span class="string">"(2181|9092)"</span></span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -257,7 +393,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">发表于</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-11T15:21:40+08:00">
                 2018-07-11
@@ -383,7 +519,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">发表于</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-16T14:30:29+08:00">
                 2018-05-16
@@ -516,7 +652,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">发表于</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-11T09:22:28+08:00">
                 2018-05-11
@@ -636,7 +772,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">发表于</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-03T15:56:12+08:00">
                 2018-01-03
@@ -768,8 +904,8 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">4</span>
-                  <span class="site-state-item-name">Artikel</span>
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">posts</span>
                 </a>
               </div>
             
@@ -819,7 +955,7 @@
 </div>
 
 
-  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
